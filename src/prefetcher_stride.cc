@@ -6,6 +6,7 @@
 /*Implementing stride prefetcher for referance. */
 #include "interface.hh"
 
+int stride = 3;
 
 void prefetch_init(void)
 {
@@ -17,15 +18,17 @@ void prefetch_init(void)
 
 void prefetch_access(AccessStat stat)
 {
-    /* pf_addr is now an address within the _next_ cache block */
-    Addr pf_addr = stat.mem_addr + BLOCK_SIZE;
+    for (i = 0; i < stride; i++){
+  	  /* pf_addr is now an address within the _next_ cache block */
+  	  Addr pf_addr = stat.mem_addr + i*BLOCK_SIZE;
 
-    /*
-     * Issue a prefetch request if a demand miss occured,
-     * and the block is not already in cache.
-     */
-    if (stat.miss && !in_cache(pf_addr)) {
-        issue_prefetch(pf_addr);
+  	  /*
+  	   * Issue a prefetch request if a demand miss occured,
+  	   * and the block is not already in cache.
+  	   */
+   	 if (stat.miss && !in_cache(pf_addr)) {
+       		 issue_prefetch(pf_addr);
+   	 }
     }
 }
 

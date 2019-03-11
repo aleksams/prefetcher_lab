@@ -6,10 +6,12 @@
 /*Implementing stride prefetcher for referance. */
 #include "interface.hh"
 
-int stride = 3;
+int stride;
+
 
 void prefetch_init(void)
 {
+	stride = 3;
     /* Called before any calls to prefetch_access. */
     /* This is the place to initialize data structures. */
 

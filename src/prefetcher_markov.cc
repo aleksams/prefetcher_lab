@@ -6,9 +6,13 @@
 
 #include "interface.hh"
 
+struct table_input {
+	Addr addr;
+	int count;
+}
 
 const unsigned int MAX_TABLE_SIZE = 64;
-const unsigned int TABLE_INPUTS = 4;
+const unsigned int MAX_TABLE_INPUTS = 4;
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -17,29 +21,39 @@ const unsigned int TABLE_INPUTS = 4;
 //--------------------------------------------
 class Table {
     private:
-    Addr miss_table[][];
-    Addr miss_table_index[];
+    table_input  miss_table[][];
+    table_input  miss_table_index[];
     int  last_miss_index;
+    bool found;
     public:
     Table (int table_rows, int table_columns)
     {
         miss_table[table_rows][table_columns];
         miss_table_index[table_rows];
-	last_miss_index=-1;
+	last_miss_index = -1;
     }
     void insert_miss (Addr miss)
     {
+	found = 0;
         if (last_miss_index!=-1) {
-	    for (int i=0; i<TABLE_INPUTS; i++) {
-	        
+	    for (int i=0; i < MAX_TABLE_INPUTS; i++) {
+		if (miss_table[last_miss_index][i].addr == miss){
+			miss_table[last_miss_index][i].count++;
+			found = 1; //use this flag to determine that the addr was already in the matrix
+		}
 	    }
+	    if (found == 0){
+			//Replace miss_table content with new miss.
+  	    }
 	}
         for (int i=0; i<MAX_TABLE_SIZE; i++) {
-	    if (miss_table_index[i]==miss) {
-	        
+	    if (miss_table_index[i].addr == miss) {
+		last_miss_index = i;
+		//Need a flag to set that it was found.
 	    }
 	}
-    }
+   	//CHECK FOR FOUND AND REPLACE IF NOT. 
+   }
 };
 //--------------------------------------------
 //--------------------------------------------

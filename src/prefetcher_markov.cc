@@ -9,10 +9,10 @@
 struct table_input {
 	Addr addr;
 	int count;
-}
+};
 
-const unsigned int MAX_TABLE_SIZE = 64;
-const unsigned int MAX_TABLE_INPUTS = 4;
+const unsigned int MAX_TABLE_ROWS = 64;
+const unsigned int MAX_TABLE_COLUMNS = 4;
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -21,40 +21,75 @@ const unsigned int MAX_TABLE_INPUTS = 4;
 //--------------------------------------------
 class Table {
     private:
-    table_input  miss_table[][];
-    table_input  miss_table_index[];
-    int  last_miss_index;
-    bool found;
+    int rows = 64;
+    int columns = 4;
+    table_input  miss_table[rows][columns];
+    table_input  index_list[rows];
+    int last_miss_index;
+
     public:
-    Table (int table_rows, int table_columns)
-    {
-        miss_table[table_rows][table_columns];
-        miss_table_index[table_rows];
-	last_miss_index = -1;
-    }
+    Table ();
+
     void insert_miss (Addr miss)
     {
-	found = 0;
+	bool found = false;
         if (last_miss_index!=-1) {
-	    for (int i=0; i < MAX_TABLE_INPUTS; i++) {
+	    for (int i=0; i < columns; i++) {
 		if (miss_table[last_miss_index][i].addr == miss){
 			miss_table[last_miss_index][i].count++;
-			found = 1; //use this flag to determine that the addr was already in the matrix
+			found = true; //use this flag to determine that the addr was already in the matrix
+			break;
 		}
 	    }
-	    if (found == 0){
-			//Replace miss_table content with new miss.
+	    if (found == false){
+		//Replace miss_table content with new miss.
+		int lowest = 0;
+                for (int i=1; i < columns; i++) {
+                    if (miss_table[last_miss_index][i].count <= miss_table[last_miss_index][lowest].count){
+                        lowest = i;
+                    }
+                }
+		miss_table[last_miss_index][lowest].addr = miss;
+		miss_table[last_miss_index][lowest].count = 0;
   	    }
 	}
-        for (int i=0; i<MAX_TABLE_SIZE; i++) {
-	    if (miss_table_index[i].addr == miss) {
-		last_miss_index = i;
-		//Need a flag to set that it was found.
+	found = false;
+        for (int i=0; i<rows; i++) {
+	    if (index_table[i].addr == miss) {
+		index_table[i].count++;
+                last_miss_index = i;
+		found = true;
+		break;
 	    }
 	}
-   	//CHECK FOR FOUND AND REPLACE IF NOT. 
-   }
+	if (found == false) {
+            int lowest = 0;
+            for (int i=1; i < rows; i++) {
+                if (index_table[i].count <= index_table[lowest].count){
+                    lowest = i;
+                }
+            }
+            index_table[lowest].addr = miss;
+            index_table[lowest].count = 0;
+	}
+    }
+    
+    Addr get_next_miss (Addr miss) {
+        for (int i=0; i<rows; i++) {
+            if (index_table[i].addr == miss) {
+                int highest = 0;
+		for (int j=1; j<columns; j++) {
+                    if (miss_table[i][j].count >= miss_table[i][highest].count){
+                        highest = j;
+		    }
+		}
+		return miss_table[i][highest].addr;
+	    }
+        }
+    }
 };
+
+Table markov_table();
 //--------------------------------------------
 //--------------------------------------------
 
@@ -79,8 +114,8 @@ void prefetch_access(AccessStat stat)
         issue_prefetch(pf_addr);
     }*/
     if (stat.miss) {
-        miss_list.create_node(stat.mem_addr);
-        Addr pf_addr = miss_list.next_miss(stat.mem_addr);
+        markov_table.insert_miss(stat.mem_addr);
+        Addr pf_addr = markov_table.get_next_miss(stat.mem_addr);
 	if (pf_addr==0) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
         }

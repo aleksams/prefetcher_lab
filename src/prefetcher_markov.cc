@@ -21,17 +21,16 @@ const unsigned int MAX_TABLE_COLUMNS = 4;
 //--------------------------------------------
 class Table {
     private:
-    int rows = 64;
-    int columns = 4;
-    table_input  miss_table[rows][columns];
-    table_input  index_list[rows];
+    table_input  miss_table[MAX_TABLE_ROWS][MAX_TABLE_COLUMNS];
+    table_input  index_list[MAX_TABLE_ROWS];
     int last_miss_index;
 
     public:
-    Table ();
 
     void insert_miss (Addr miss)
     {
+	int rows    =    MAX_TABLE_ROWS;
+	int columns = MAX_TABLE_COLUMNS;
 	bool found = false;
         if (last_miss_index!=-1) {
 	    for (int i=0; i < columns; i++) {
@@ -55,8 +54,8 @@ class Table {
 	}
 	found = false;
         for (int i=0; i<rows; i++) {
-	    if (index_table[i].addr == miss) {
-		index_table[i].count++;
+	    if (index_list[i].addr == miss) {
+		index_list[i].count++;
                 last_miss_index = i;
 		found = true;
 		break;
@@ -65,31 +64,34 @@ class Table {
 	if (found == false) {
             int lowest = 0;
             for (int i=1; i < rows; i++) {
-                if (index_table[i].count <= index_table[lowest].count){
+                if (index_list[i].count <= index_list[lowest].count){
                     lowest = i;
                 }
             }
-            index_table[lowest].addr = miss;
-            index_table[lowest].count = 0;
+            index_list[lowest].addr = miss;
+            index_list[lowest].count = 0;
 	}
     }
-    
+
     Addr get_next_miss (Addr miss) {
+	int rows = MAX_TABLE_ROWS;
+	int columns = MAX_TABLE_COLUMNS;
         for (int i=0; i<rows; i++) {
-            if (index_table[i].addr == miss) {
+            if (index_list[i].addr == miss) {
                 int highest = 0;
 		for (int j=1; j<columns; j++) {
                     if (miss_table[i][j].count >= miss_table[i][highest].count){
                         highest = j;
 		    }
 		}
-		return miss_table[i][highest].addr;
+	    return miss_table[i][highest].addr;
 	    }
         }
+	return 0;
     }
 };
 
-Table markov_table();
+static Table * markov_table;
 //--------------------------------------------
 //--------------------------------------------
 
@@ -98,6 +100,7 @@ void prefetch_init(void)
     /* Called before any calls to prefetch_access. */
     /* This is the place to initialize data structures. */
 
+	markov_table = new Table;
     //DPRINTF(HWPrefetch, "Initialized sequential-on-access prefetcher\n");
 }
 
@@ -114,8 +117,8 @@ void prefetch_access(AccessStat stat)
         issue_prefetch(pf_addr);
     }*/
     if (stat.miss) {
-        markov_table.insert_miss(stat.mem_addr);
-        Addr pf_addr = markov_table.get_next_miss(stat.mem_addr);
+        markov_table->insert_miss(stat.mem_addr);
+        Addr pf_addr = markov_table->get_next_miss(stat.mem_addr);
 	if (pf_addr==0) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
         }

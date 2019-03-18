@@ -11,8 +11,8 @@ struct table_input {
 	int count;
 };
 
-const unsigned int MAX_TABLE_ROWS = 64;
-const unsigned int MAX_TABLE_COLUMNS = 4;
+const unsigned int MAX_TABLE_ROWS = 8*128;
+const unsigned int MAX_TABLE_COLUMNS = 2*4;
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -23,7 +23,7 @@ class Table {
     private:
     table_input  miss_table[MAX_TABLE_ROWS][MAX_TABLE_COLUMNS];
     table_input  index_list[MAX_TABLE_ROWS];
-    int last_miss_index;
+    int last_miss_index=-1;
 
     public:
 
@@ -68,8 +68,13 @@ class Table {
                     lowest = i;
                 }
             }
+	    last_miss_index = lowest;
             index_list[lowest].addr = miss;
             index_list[lowest].count = 0;
+	    for (int i=0; i<columns;i++) {
+	        miss_table[lowest][i].addr = 0;
+                miss_table[lowest][i].count = 0;
+	    }
 	}
     }
 
@@ -101,7 +106,7 @@ void prefetch_init(void)
     /* This is the place to initialize data structures. */
 
 	markov_table = new Table;
-    //DPRINTF(HWPrefetch, "Initialized sequential-on-access prefetcher\n");
+    DPRINTF(HWPrefetch, "Initialized Markov prefetcher\n");
 }
 
 void prefetch_access(AccessStat stat)
@@ -119,10 +124,10 @@ void prefetch_access(AccessStat stat)
     if (stat.miss) {
         markov_table->insert_miss(stat.mem_addr);
         Addr pf_addr = markov_table->get_next_miss(stat.mem_addr);
-	if (pf_addr==0) {
+	/*if (pf_addr==0) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
-        }
-	if (!in_cache(pf_addr)){
+        }*/
+	if (!in_cache(pf_addr) && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
 	    issue_prefetch(pf_addr);
 	}
     }

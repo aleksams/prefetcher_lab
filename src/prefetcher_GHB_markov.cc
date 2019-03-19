@@ -5,7 +5,7 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = 64*64;
+const unsigned int MAX_LIST_SIZE = 64*4;
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];

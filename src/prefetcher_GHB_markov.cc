@@ -18,9 +18,9 @@ class Table {
         int slots = MAX_LIST_SIZE;
 
         for(int i=0; i < slots - 1; i++){
-          history_list[i] = history_list[i+1];
+          history_list[i].addr = history_list[i+1].addr;
         }
-        history_list[slots-1] = miss;
+        history_list[slots-1].addr = miss;
     }
 
     Addr get_next_miss (Addr miss)
@@ -36,13 +36,13 @@ class Table {
         for(int i=0; i < slots-1; i++){
           if(history_list[i].addr == miss){
             for(int j=0; j < miss_size; j++){
-              if(miss_list[j].addr == history_list[i+1]){
+              if(miss_list[j].addr == history_list[i+1].addr){
                 miss_list[j].count++;
               }
               else{
                 for(int k=(miss_size-1); i >-1; i--){
                   if (miss_list[k].count == 0){
-                    miss_list[k].addr = history_list[i+1];
+                    miss_list[k].addr = history_list[i+1].addr;
                     miss_list[k].count++;
                   }
                 }
@@ -53,10 +53,10 @@ class Table {
         }
         for(int i=1; i < miss_size; i++){
           highest = 0;
-          if(miss_list[i] >= miss_list[highest])
+          if(miss_list[i].count >= miss_list[highest].count)
            highest = i;
         }
-        return miss_list[highest]
+        return miss_list[highest].addr
     }
 };
 

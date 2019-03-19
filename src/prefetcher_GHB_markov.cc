@@ -14,7 +14,6 @@ class Table {
   public:
     void insert_miss(Addr miss){
 
-
         int slots = MAX_LIST_SIZE;
 
         for(int i=0; i < slots - 1; i++){
@@ -34,7 +33,7 @@ class Table {
           miss_list[i].addr = 0;
           miss_list[i].count = 0;
         }
-        for(int i=0; i < slots-1; i++){
+        for(int i=0; i < (slots-1); i++){
           if(history_list[i].addr == miss){
             for(int j=0; j < miss_size; j++){
               if(miss_list[j].addr == history_list[i+1].addr){
@@ -44,7 +43,7 @@ class Table {
               }
             }
             if(found == false){
-                for(int k=(miss_size-1); i >-1; i--){
+                for(int k=(miss_size-1); k > -1; k--){
                   if (miss_list[k].count == 0){
                     miss_list[k].addr = history_list[i+1].addr;
                     miss_list[k].count++;

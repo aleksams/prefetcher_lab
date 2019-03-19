@@ -12,7 +12,7 @@ struct table_input {
 };
 
 const unsigned int MAX_TABLE_ROWS = 64*64;
-const unsigned int MAX_TABLE_COLUMNS = 64*4;
+const unsigned int MAX_TABLE_COLUMNS = 8;
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -83,13 +83,20 @@ class Table {
 	int columns = MAX_TABLE_COLUMNS;
         for (int i=0; i<rows; i++) {
             if (index_list[i].addr == miss) {
-                int highest = 0;
-		for (int j=1; j<columns; j++) {
-                    if (miss_table[i][j].count >= miss_table[i][highest].count){
+                int num = 0;
+		for (int j=0; j<columns; j++) {
+                    /*if (miss_table[i][j].count >= miss_table[i][highest].count){
                         highest = j;
-		    }
+		    }*/
+		    if (!in_cache(miss_table[i][j].addr) && miss_table[i][j].addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
+                        issue_prefetch(miss_table[i][j].addr);
+			num++;
+                    }
 		}
-	    return miss_table[i][highest].addr;
+		if(num==0) {
+		    issue_prefetch(miss + BLOCK_SIZE);
+		}
+	    //return miss_table[i][highest].addr;
 	    }
         }
 	return 0;
@@ -127,9 +134,9 @@ void prefetch_access(AccessStat stat)
 	/*if (pf_addr==0) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
         }*/
-	if (!in_cache(pf_addr) && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
+	/*if (!in_cache(pf_addr) && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
 	    issue_prefetch(pf_addr);
-	}
+	}*/
     }
 }
 

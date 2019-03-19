@@ -52,7 +52,6 @@ class Table {
 
         }
         for(int i=1; i < miss_size; i++){
-          highest = 0;
           if(miss_list[i].count >= miss_list[highest].count)
            highest = i;
         }
@@ -95,7 +94,7 @@ void prefetch_access(AccessStat stat)
 	if (!in_cache(pf_addr) && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
 	    issue_prefetch(pf_addr);
 	}
-    }
+  }
 }
 
 void prefetch_complete(Addr addr) {

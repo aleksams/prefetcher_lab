@@ -11,8 +11,8 @@ struct table_input {
 	int count;
 };
 
-const unsigned int MAX_TABLE_ROWS = 8*128;
-const unsigned int MAX_TABLE_COLUMNS = 2*4;
+const unsigned int MAX_TABLE_ROWS = 64*64;
+const unsigned int MAX_TABLE_COLUMNS = 64*4;
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -49,7 +49,7 @@ class Table {
                     }
                 }
 		miss_table[last_miss_index][lowest].addr = miss;
-		miss_table[last_miss_index][lowest].count = 0;
+		miss_table[last_miss_index][lowest].count = 1;
   	    }
 	}
 	found = false;
@@ -70,7 +70,7 @@ class Table {
             }
 	    last_miss_index = lowest;
             index_list[lowest].addr = miss;
-            index_list[lowest].count = 0;
+            index_list[lowest].count = 1;
 	    for (int i=0; i<columns;i++) {
 	        miss_table[lowest][i].addr = 0;
                 miss_table[lowest][i].count = 0;

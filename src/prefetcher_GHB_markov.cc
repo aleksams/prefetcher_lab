@@ -56,7 +56,7 @@ class Table {
           if(miss_list[i].count >= miss_list[highest].count)
            highest = i;
         }
-        return miss_list[highest].addr
+        return miss_list[highest].addr;
     }
 };
 

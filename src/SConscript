@@ -3,4 +3,4 @@
 # This tells SCons where to find the prefetcher file.
 
 Import('*')
-Source('prefetcher_markov.cc')
+Source('prefetcher_GHB_markov.cc')

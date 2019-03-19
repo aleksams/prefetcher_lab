@@ -25,6 +25,7 @@ class Table {
 
     Addr get_next_miss (Addr miss)
     {
+        bool found = false;
         int highest = 0;
         int slots = MAX_LIST_SIZE;
         int miss_size = int(MAX_LIST_SIZE/2);
@@ -38,8 +39,11 @@ class Table {
             for(int j=0; j < miss_size; j++){
               if(miss_list[j].addr == history_list[i+1].addr){
                 miss_list[j].count++;
+                found = true;
+                break;
               }
-              else{
+            }
+            if(found == false){
                 for(int k=(miss_size-1); i >-1; i--){
                   if (miss_list[k].count == 0){
                     miss_list[k].addr = history_list[i+1].addr;
@@ -48,9 +52,8 @@ class Table {
                 }
               }
             }
+            found = false;
           }
-
-        }
         for(int i=1; i < miss_size; i++){
           if(miss_list[i].count >= miss_list[highest].count)
            highest = i;

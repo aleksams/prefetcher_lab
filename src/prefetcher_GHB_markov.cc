@@ -30,7 +30,7 @@ class Table {
         int miss_size = int(MAX_LIST_SIZE/2);
 
         for(int i=0; i < miss_size; i++){
-          miss_list[i].addr = 0;
+          miss_list[i].addr = -1;
           miss_list[i].count = 0;
         }
         for(int i=0; i < (slots-1); i++){
@@ -43,7 +43,7 @@ class Table {
               }
             }
             if(found == false){
-                for(int k=(miss_size-1); k == 0; k--){
+                for(int k=0; k < miss_size; k++){
                   if (miss_list[k].count == 0){
                     miss_list[k].addr = history_list[i+1].addr;
                     miss_list[k].count++;

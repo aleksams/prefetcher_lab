@@ -5,7 +5,7 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = 64*4;
+const unsigned int MAX_LIST_SIZE = 64*32;
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];
@@ -54,8 +54,9 @@ class Table {
             found = false;
           }
         for(int i=1; i < miss_size; i++){
-          if(miss_list[i].count >= miss_list[highest].count)
-           highest = i;
+          if(miss_list[i].count >= miss_list[highest].count){
+           	highest = i;
+	  }
         }
         return miss_list[highest].addr;
     }
@@ -93,7 +94,7 @@ void prefetch_access(AccessStat stat)
 	/*if (pf_addr==0) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
         }*/
-	if (!in_cache(pf_addr) && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
+	if (!in_cache(pf_addr)){// && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
 	    issue_prefetch(pf_addr);
 	}
   }

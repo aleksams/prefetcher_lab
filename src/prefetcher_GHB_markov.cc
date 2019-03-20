@@ -5,7 +5,7 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = 64*4;
+const unsigned int MAX_LIST_SIZE = 64;
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];
@@ -20,7 +20,7 @@ class Table {
           history_list[i].addr = history_list[i+1].addr;
         }
         history_list[slots-1].addr = miss;
-        history_list[1].count = history_list[0].count+1;
+        history_list[0].count++;
     }
 
     Addr get_next_miss (Addr miss)
@@ -30,7 +30,7 @@ class Table {
         int slots = MAX_LIST_SIZE;
         int miss_size = int(MAX_LIST_SIZE/2);
 
-        if(history_list[1].count >= MAX_LIST_SIZE){
+        if(history_list[0].count >= MAX_LIST_SIZE){
         for(int i=0; i < miss_size; i++){
           miss_list[i].addr = -1;
           miss_list[i].count = 0;

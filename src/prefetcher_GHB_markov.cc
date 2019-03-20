@@ -95,7 +95,7 @@ void prefetch_access(AccessStat stat)
 	/*if (pf_addr==-1) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
         }*/
-	if (!in_cache(pf_addr)){// && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
+	if (!in_cache(pf_addr) && pf_addr != -1){// && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
 	    issue_prefetch(pf_addr);
 	}
   }

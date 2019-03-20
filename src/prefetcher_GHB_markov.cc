@@ -16,7 +16,7 @@ class Table {
 
         int slots = MAX_LIST_SIZE;
 
-        for(int i=0; i < slots - 1; i++){
+        for(int i=0; i < (slots - 1); i++){
           history_list[i].addr = history_list[i+1].addr;
         }
         history_list[slots-1].addr = miss;
@@ -43,10 +43,11 @@ class Table {
               }
             }
             if(found == false){
-                for(int k=(miss_size-1); k > -1; k--){
+                for(int k=(miss_size-1); k == 0; k--){
                   if (miss_list[k].count == 0){
                     miss_list[k].addr = history_list[i+1].addr;
                     miss_list[k].count++;
+                    break;
                   }
                 }
               }
@@ -56,7 +57,7 @@ class Table {
         for(int i=1; i < miss_size; i++){
           if(miss_list[i].count >= miss_list[highest].count){
            	highest = i;
-	  }
+	         }
         }
         return miss_list[highest].addr;
     }

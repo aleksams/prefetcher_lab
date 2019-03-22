@@ -124,9 +124,9 @@ void prefetch_access(AccessStat stat)
     if (stat.miss) {
       markov_table->insert_miss(stat.mem_addr);
       Addr pf_addr = markov_table->get_next_miss(stat.mem_addr);
-  /*if (pf_addr==0) {
+      if (pf_addr==0) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
-        }*/
+      }
       if (!in_cache(pf_addr) && pf_addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
         issue_prefetch(pf_addr);
       }

@@ -44,7 +44,7 @@ class Table {
             for(i = 0; i < (rows-1); i++){
               miss_table[last_miss_index][i] = miss_table[i+1];
             }
-            miss_table[rows-1] = miss
+            miss_table[rows-1] = miss;
           }
 
           found = false;

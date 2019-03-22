@@ -7,11 +7,11 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = pow(2,10);
+const unsigned int MAX_LIST_SIZE = pow(2,12);
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];
-    table_input miss_list[int(MAX_LIST_SIZE/2)];
+    table_input miss_list[MAX_LIST_SIZE/2];
 
   public:
     void insert_miss_ghb(Addr miss){
@@ -30,7 +30,7 @@ class Table {
         bool found = false;
         int highest = 0;
         int slots = MAX_LIST_SIZE;
-        int miss_size = int(MAX_LIST_SIZE/2);
+        int miss_size = MAX_LIST_SIZE/2;
 
         //if(history_list[0].count >= MAX_LIST_SIZE){
         for(int i=0; i < miss_size; i++){

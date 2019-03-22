@@ -46,21 +46,20 @@ class Table {
             }
             miss_table[last_miss_index][columns-1].addr = miss;
           }
-
-          found = false;
-          if(entries < MAX_TABLE_ROWS){
-            for (int i=0; i<rows; i++) {
-              if (index_list[i].addr == miss) {
-                last_miss_index = i;
-                found = true;
-                break;
-              }
+        }
+        found = false;
+        if(entries < MAX_TABLE_ROWS){
+          for (int i=0; i<rows; i++) {
+            if (index_list[i].addr == miss) {
+              found = true;
+              last_miss_index = i;
+              break;
             }
-            if (found == false) {
-              index_list[entries].addr = miss;
-              last_miss_index = entries;
-              entries++;
-            }
+          }
+          if (found == false) {
+            index_list[entries].addr = miss;
+            last_miss_index = entries;
+            entries++;
           }
         }
       }
@@ -68,18 +67,14 @@ class Table {
     void get_next_miss (Addr miss) {
       int rows = MAX_TABLE_ROWS;
       int columns = MAX_TABLE_COLUMNS;
-      for (int i=0; i<rows; i++) {
-        if (index_list[i].addr == miss) {
+      if (index_list[last_miss_index].addr == miss) {
           for (int j=0; j<columns; j++) {
             if(!in_cache(miss_table[i][j].addr)){
               issue_prefetch(miss_table[i][j].addr);
             }
           }
-          last_miss_index = i;
-          break;
         }
       }
-    }
 };
 
 static Table * markov_table;

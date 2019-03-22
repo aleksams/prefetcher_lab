@@ -79,27 +79,27 @@ class Table {
     }
 
     Addr get_next_miss (Addr miss) {
-	int rows = MAX_TABLE_ROWS;
-	int columns = MAX_TABLE_COLUMNS;
+			int rows = MAX_TABLE_ROWS;
+			int columns = MAX_TABLE_COLUMNS;
         for (int i=0; i<rows; i++) {
             if (index_list[i].addr == miss) {
                 int num = 0;
-		for (int j=0; j<columns; j++) {
-                    /*if (miss_table[i][j].count >= miss_table[i][highest].count){
+								for (int j=0; j<columns; j++) {
+                    if (miss_table[i][j].count >= miss_table[i][highest].count){
                         highest = j;
-		    }*/
-		    if (!in_cache(miss_table[i][j].addr) && miss_table[i][j].addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
-                        issue_prefetch(miss_table[i][j].addr);
-			num++;
-                    }
-		}
-		if(num==0) {
-		    issue_prefetch(miss + BLOCK_SIZE);
-		}
-	    //return miss_table[i][highest].addr;
-	    }
+		    						}
+		    					/*	if (!in_cache(miss_table[i][j].addr) && miss_table[i][j].addr!=0){// && pf_addr<MAX_PHYS_MEM_ADDR){
+                    		issue_prefetch(miss_table[i][j].addr);
+												num++;
+                   }*/
+								}
+							/*if(num==0) {
+		    				issue_prefetch(miss + BLOCK_SIZE);
+							}*/
+	    		return miss_table[i][highest].addr;
+	    			}
         }
-	return 0;
+				return 0;
     }
 };
 
@@ -112,7 +112,7 @@ void prefetch_init(void)
     /* Called before any calls to prefetch_access. */
     /* This is the place to initialize data structures. */
 
-	markov_table = new Table;
+		markov_table = new Table;
     DPRINTF(HWPrefetch, "Initialized Markov prefetcher\n");
 }
 

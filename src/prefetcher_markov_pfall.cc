@@ -70,8 +70,8 @@ class Table {
       for (int i=0; i<rows; i++) {
         if (index_list[i].addr == miss) {
           for (int j=0; j<columns; j++) {
-            if(!in_cache(miss_table.addr[j])){
-              issue_prefetch(miss_table.addr[j]);
+            if(!in_cache(miss_table[j].addr)){
+              issue_prefetch(miss_table[j].addr);
             }
           }
         }

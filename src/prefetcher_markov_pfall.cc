@@ -42,9 +42,9 @@ class Table {
           }
           if (found == false){
             for(i = 0; i < (rows-1); i++){
-              miss_table[last_miss_index][i].addr = miss_table[i+1].addr;
+              miss_table[last_miss_index][i].addr = miss_table[last_miss_index][i+1].addr;
             }
-            miss_table[rows-1].addr = miss;
+            miss_table[last_miss_index][rows-1].addr = miss;
           }
 
           found = false;
@@ -64,20 +64,20 @@ class Table {
         }
       }
 
-    Addr get_next_miss (Addr miss) {
+    void get_next_miss (Addr miss) {
       int rows = MAX_TABLE_ROWS;
       int columns = MAX_TABLE_COLUMNS;
       for (int i=0; i<rows; i++) {
         if (index_list[i].addr == miss) {
           for (int j=0; j<columns; j++) {
-            if(!in_cache(miss_table[j].addr)){
-              issue_prefetch(miss_table[j].addr);
+            if(!in_cache(miss_table[i][j].addr)){
+              issue_prefetch(miss_table[i][j].addr);
             }
           }
+          last_miss_index = i;
+          break;
         }
-        break;
       }
-      return 0;
     }
 };
 
@@ -108,7 +108,7 @@ void prefetch_access(AccessStat stat)
     }*/
     if (stat.miss) {
       markov_table->insert_miss(stat.mem_addr);
-      get_next_miss(stat.mem_addr);
+      markov_table->get_next_miss(stat.mem_addr);
 
     }
 

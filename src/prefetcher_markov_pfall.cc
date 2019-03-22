@@ -69,8 +69,8 @@ class Table {
       int columns = MAX_TABLE_COLUMNS;
       if (index_list[last_miss_index].addr == miss) {
           for (int j=0; j<columns; j++) {
-            if(!in_cache(miss_table[i][j].addr)){
-              issue_prefetch(miss_table[i][j].addr);
+            if(!in_cache(miss_table[last_miss_index][j].addr)){
+              issue_prefetch(miss_table[last_miss_index][j].addr);
             }
           }
         }

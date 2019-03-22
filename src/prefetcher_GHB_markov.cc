@@ -1,5 +1,6 @@
 #include "interface.hh"
 #include <cmath>
+#include <math>
 
 struct table_input {
   Addr addr;

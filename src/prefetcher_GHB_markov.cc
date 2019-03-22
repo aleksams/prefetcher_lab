@@ -5,7 +5,7 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = 2^21;
+const unsigned int MAX_LIST_SIZE = 2^10;
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];
@@ -66,8 +66,8 @@ class Table {
       //else{
         //return -1;
       }
-    }
 };
+
 
 static Table * ghb;
 //--------------------------------

@@ -5,14 +5,14 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = 64*64*10;
+const unsigned int MAX_LIST_SIZE = 2^21;
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];
     table_input miss_list[int(MAX_LIST_SIZE/2)];
 
   public:
-    void insert_miss(Addr miss){
+    void insert_miss_ghb(Addr miss){
 
         int slots = MAX_LIST_SIZE;
 
@@ -20,17 +20,17 @@ class Table {
           history_list[i].addr = history_list[i+1].addr;
         }
         history_list[slots-1].addr = miss;
-        history_list[0].count++;
+        //history_list[0].count++;
     }
 
-    Addr get_next_miss (Addr miss)
+    Addr get_next_miss_ghb(Addr miss)
     {
         bool found = false;
         int highest = 0;
         int slots = MAX_LIST_SIZE;
         int miss_size = int(MAX_LIST_SIZE/2);
 
-        if(history_list[0].count >= MAX_LIST_SIZE){
+        //if(history_list[0].count >= MAX_LIST_SIZE){
         for(int i=0; i < miss_size; i++){
           miss_list[i].addr = -1;
           miss_list[i].count = 0;
@@ -62,9 +62,9 @@ class Table {
 	         }
         }
         return miss_list[highest].addr;
-      }
-      else{
-        return -1;
+
+      //else{
+        //return -1;
       }
     }
 };
@@ -96,8 +96,8 @@ void prefetch_access(AccessStat stat)
         issue_prefetch(pf_addr);
     }*/
   if (stat.miss) {
-      ghb->insert_miss(stat.mem_addr);
-      Addr pf_addr = ghb->get_next_miss(stat.mem_addr);
+      ghb->insert_miss_ghb(stat.mem_addr);
+      Addr pf_addr = ghb->get_next_miss_ghb(stat.mem_addr);
 	/*if (pf_addr==-1) {
             pf_addr = stat.mem_addr + BLOCK_SIZE;
         }*/

@@ -1,11 +1,12 @@
 #include "interface.hh"
+#include <cmath>
 
 struct table_input {
   Addr addr;
   int count;
 };
 
-const unsigned int MAX_LIST_SIZE = 2^10;
+const unsigned int MAX_LIST_SIZE = pow(2,10);
 class Table {
   private:
     table_input history_list[MAX_LIST_SIZE];

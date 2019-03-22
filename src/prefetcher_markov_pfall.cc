@@ -45,8 +45,10 @@ class Table {
           if (found == false){
             for(int i = 0; i < (columns-1); i++){
               miss_table[last_miss_index][i].addr = miss_table[last_miss_index][i+1].addr;
+              miss_table[last_miss_index][i].count = miss_table[last_miss_index][i+1].count
             }
             miss_table[last_miss_index][columns-1].addr = miss;
+            miss_table[last_miss_index][columns-1].count = 1;
           }
         }
         found = false;
@@ -71,7 +73,8 @@ class Table {
       int columns = MAX_TABLE_COLUMNS;
       if (index_list[last_miss_index].addr == miss) {
           for (int j=0; j<columns; j++) {
-            if(!in_cache(miss_table[last_miss_index][j].addr)){
+            pf_addr = miss_table[last_miss_index][j].addr;
+            if(!in_cache(pf_addr) && miss_table[last_miss_index][i].count == 1){
               issue_prefetch(miss_table[last_miss_index][j].addr);
             }
           }

@@ -41,7 +41,7 @@ class Table {
             }
           }
           if (found == false){
-            for(i = 0; i < (rows-1); i++){
+            for(int i = 0; i < (rows-1); i++){
               miss_table[last_miss_index][i].addr = miss_table[last_miss_index][i+1].addr;
             }
             miss_table[last_miss_index][rows-1].addr = miss;
@@ -111,6 +111,7 @@ void prefetch_access(AccessStat stat)
       markov_table->get_next_miss(stat.mem_addr);
 
     }
+}
 
 void prefetch_complete(Addr addr) {
     /*

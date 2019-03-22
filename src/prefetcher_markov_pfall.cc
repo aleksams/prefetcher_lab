@@ -41,10 +41,10 @@ class Table {
             }
           }
           if (found == false){
-            for(int i = 0; i < (rows-1); i++){
+            for(int i = 0; i < (columns-1); i++){
               miss_table[last_miss_index][i].addr = miss_table[last_miss_index][i+1].addr;
             }
-            miss_table[last_miss_index][rows-1].addr = miss;
+            miss_table[last_miss_index][columns-1].addr = miss;
           }
 
           found = false;

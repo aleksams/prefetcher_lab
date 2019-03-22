@@ -53,12 +53,13 @@ class Table {
               if (index_list[i].addr == miss) {
                 last_miss_index = i;
                 found = true;
-                entries++;
                 break;
               }
             }
             if (found == false) {
               index_list[entries].addr = miss;
+              last_miss_index = entries;
+              entries++;
             }
           }
         }

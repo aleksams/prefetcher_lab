@@ -11,8 +11,10 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_TABLE_ROWS = 4048;
-const unsigned int MAX_TABLE_COLUMNS = 32;
+
+const unsigned int MAX_TABLE_ROWS = 4096;
+const unsigned int MAX_TABLE_COLUMNS = 64;
+
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -48,21 +50,21 @@ class Table {
           }
         }
         found = false;
-        if(entries < MAX_TABLE_ROWS){
-          for (int i=0; i<rows; i++) {
-            if (index_list[i].addr == miss) {
-              found = true;
-              last_miss_index = i;
-              break;
-            }
-          }
-          if (found == false) {
-            index_list[entries].addr = miss;
-            last_miss_index = entries;
-            entries++;
+
+        for (int i=0; i<rows; i++) {
+          if (index_list[i].addr == miss) {
+            found = true;
+            last_miss_index = i;
+            break;
           }
         }
+        if (found == false && entries < MAX_TABLE_ROWS) {
+          index_list[entries].addr = miss;
+          last_miss_index = entries;
+          entries++;
+        }
       }
+
 
     void get_next_miss (Addr miss) {
       int rows = MAX_TABLE_ROWS;

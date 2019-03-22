@@ -11,8 +11,8 @@ struct table_input {
   int count;
 };
 
-const unsigned int MAX_TABLE_ROWS = 64*64;
-const unsigned int MAX_TABLE_COLUMNS = 64*4;
+const unsigned int MAX_TABLE_ROWS = 4096;
+const unsigned int MAX_TABLE_COLUMNS = 8;
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
 //Addr miss_table_index[MAX_LIST_SIZE];
@@ -44,7 +44,7 @@ class Table {
             for(i = 0; i < (rows-1); i++){
               miss_table[last_miss_index][i] = miss_table[i+1];
             }
-            miss_table[rows-1] = miss
+            miss_table[rows-1] = miss;
           }
 
           found = false;

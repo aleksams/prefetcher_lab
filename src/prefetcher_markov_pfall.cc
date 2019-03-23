@@ -12,8 +12,8 @@ struct table_input {
 };
 
 
-const unsigned int MAX_TABLE_ROWS = 8192;
-const unsigned int MAX_TABLE_COLUMNS = 2;
+const unsigned int MAX_TABLE_ROWS = 4086;
+const unsigned int MAX_TABLE_COLUMNS = 4;
 
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
@@ -37,7 +37,7 @@ class Table {
       bool found = false;
         if (last_miss_index!=-1) {
           for (int i=0; i < columns; i++) {
-            if (miss_table[last_miss_index][i].addr == miss){
+            if (miss_table[last_miss_index][i].addr == miss && miss_table[last_miss_index][i].count == 1){
                found = true; //use this flag to determine that the addr was already in the matrix
                break;
             }
@@ -60,8 +60,29 @@ class Table {
             break;
           }
         }
+        //using index_list.count to determine FIFO
+        if (found == false && entries == MAX_TABLE_ROWS){
+          for(int i=0; i<rows; i++){
+            if(index_list[i].count == 1){
+              index_list[i].addr = miss;
+              index_list[i].count = 0;
+              if(i == (rows-1)){
+                index_list[0].count = 1;
+              } else{
+                index_list[i+1].count = 1;
+              }
+              last_miss_index = i;
+            }
+          }
+          for(int j=0; j<columns;j++){
+            miss_table[last_miss_index][j].addr = 0;
+            miss_table[last_miss_index][j].count = 0;
+          }
+        }
+        //Filling empty slots before changing to FIFO
         if (found == false && entries < MAX_TABLE_ROWS) {
           index_list[entries].addr = miss;
+          index_list[entries].count = 0;
           last_miss_index = entries;
           entries++;
         }

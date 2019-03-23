@@ -108,7 +108,7 @@ class Table {
         }
       }
       else if(firstEntry){
-        Addr pf_addr = stat.mem_addr + BLOCK_SIZE;
+        Addr pf_addr = miss + BLOCK_SIZE;
         issue_prefetch(pf_addr);
       }
     }

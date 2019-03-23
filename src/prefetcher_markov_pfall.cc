@@ -12,8 +12,8 @@ struct table_input {
 };
 
 
-const unsigned int MAX_TABLE_ROWS = 4086;
-const unsigned int MAX_TABLE_COLUMNS = 4;
+const unsigned int MAX_TABLE_ROWS = 8192;
+const unsigned int MAX_TABLE_COLUMNS = 8;
 
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];

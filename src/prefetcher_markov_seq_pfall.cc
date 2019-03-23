@@ -12,8 +12,8 @@ struct table_input {
 };
 
 
-const unsigned int MAX_TABLE_ROWS = 1024;
-const unsigned int MAX_TABLE_COLUMNS = 4;
+const unsigned int MAX_TABLE_ROWS = 8192;
+const unsigned int MAX_TABLE_COLUMNS = 8;
 
 
 //Addr miss_table[MAX_LIST_SIZE][LIST_INPUTS];
@@ -27,6 +27,7 @@ class Table {
     table_input  index_list[MAX_TABLE_ROWS];
     int last_miss_index=-1;
     int entries = 0;
+    bool firstEntry = false;
 
     public:
 
@@ -35,8 +36,10 @@ class Table {
       int rows    =    MAX_TABLE_ROWS;
       int columns = MAX_TABLE_COLUMNS;
       bool found = false;
-        if (last_miss_index!=-1) {
-          for (int i=0; i < columns; i++) {
+      firstEntry  = false;
+
+      if (last_miss_index!=-1) {
+         for (int i=0; i < columns; i++) {
             if (miss_table[last_miss_index][i].addr == miss && miss_table[last_miss_index][i].count == 1){
                found = true; //use this flag to determine that the addr was already in the matrix
                break;
@@ -78,6 +81,7 @@ class Table {
             miss_table[last_miss_index][j].addr = 0;
             miss_table[last_miss_index][j].count = 0;
           }
+          firstEntry = true;
         }
         //Filling empty slots before changing to FIFO
         if (found == false && entries < MAX_TABLE_ROWS) {
@@ -85,6 +89,7 @@ class Table {
           index_list[entries].count = 0;
           last_miss_index = entries;
           entries++;
+          firstEntry = true;
         }
       }
 
@@ -92,15 +97,21 @@ class Table {
     void get_next_miss (Addr miss) {
       int rows = MAX_TABLE_ROWS;
       int columns = MAX_TABLE_COLUMNS;
-      if (index_list[last_miss_index].addr == miss) {
-          for (int j=0; j<columns; j++) {
-            Addr pf_addr = miss_table[last_miss_index][j].addr;
-            if(miss_table[last_miss_index][j].count == 1 && !in_cache(pf_addr)){
-              issue_prefetch(pf_addr);
-            }
-          }
+      if(!firstEntry){
+        if (index_list[last_miss_index].addr == miss) {
+           for (int j=0; j<columns; j++) {
+              Addr pf_addr = miss_table[last_miss_index][j].addr;
+              if(miss_table[last_miss_index][j].count == 1 && !in_cache(pf_addr)){
+                 issue_prefetch(pf_addr);
+              }
+           }
         }
       }
+      else if(firstEntry){
+        Addr pf_addr = stat.mem_addr + BLOCK_SIZE;
+        issue_prefetch(pf_addr);
+      }
+    }
 };
 
 static Table * markov_table;
